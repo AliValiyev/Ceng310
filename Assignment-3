@@ -265,8 +265,11 @@ class SpellChecker:
                                 fp_1.write(The_Output)
        
                             
-nextline = fp_0.readline()
-fp_0.close()
-fp_1.close()
+            nextline = fp_0.readline()
+            
+        fp_0.close()
+        fp_1.close()
+
 Test = SpellChecker()
 Test.check("Input.txt")
+
