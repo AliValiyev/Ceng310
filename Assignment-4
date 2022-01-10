@@ -1,1 +1,87 @@
+import random
 
+def merge(S1, S2, S):
+    i = j = 0
+    while i+j < len(S):
+        if j == len(S2) or (i < len(S1) and S1[i] < S2[j]):
+            S[i+j] = S1[i] 
+            i = i + 1
+        else:
+            S[i+j] = S2[j] 
+            j = j + 1
+            
+def merge_sort(S):
+    n = len(S)
+    if n < 2:
+        return 
+    mid = n //2
+    S1 = S[0:mid] 
+    S2 = S[mid:n] 
+    merge_sort(S1)
+    merge_sort(S2) 
+    merge(S1, S2, S)
+
+def insertion_sort(A):
+    for k in range(1, len(A)): 
+        cur = A[k] 
+        j = k # find correct index j for current
+        while j > 0 and A[j-1] > cur: 
+            A[j] = A[j-1]
+            j = j - 1
+            A[j] = cur 
+
+def _type_checker(Sequence):
+    set_of_types_of_elements = set()
+    for i in range(len(Sequence)):
+        set_of_types_of_elements.add(type(Sequence[i]))
+    if len(set_of_types_of_elements) == 1:
+        return True
+    else:
+        Sample_Elements = list()
+        while len(set_of_types_of_elements) > 0:
+            Sample_Type = set_of_types_of_elements.pop()
+            for l in random.sample(range(0,len(Sequence)), len(Sequence)):
+                if type(Sequence[l]) == Sample_Type: 
+                    Sample_Elements.append(Sequence[l])
+                    break
+        for l in range(len(Sample_Elements)):
+            for n in range(l,len(Sample_Elements)):
+                try:
+                    Sample_Elements[l] < Sample_Elements[n]
+                    Sample_Elements[l] > Sample_Elements[n]
+                    Sample_Elements[l] == Sample_Elements[n]
+                except:
+                    return [Sample_Elements[l],Sample_Elements[n]]
+        return True
+
+def smart_sort(Sequence, max_length_of_the_sequence_for_insertion_sort = 50):
+    if len(Sequence) <= 1: return None
+    Type_of_Sequence = type(Sequence) 
+    if Type_of_Sequence == list:
+        Result = _type_checker(Sequence) # The element of the sequence should be comparable with each others.
+        if Result == True: 
+            if len(Sequence) < max_length_of_the_sequence_for_insertion_sort: insertion_sort(Sequence)
+            else: merge_sort(Sequence)
+        else: 
+            Feedback_Samples = str()
+            print(Result)
+            for i in range(len(Result)-1):
+                Feedback_Samples += str(Result[i]) + ", "
+            Feedback_Samples += str(Result[-1])
+            Feedback = "There are some objects in the given sequence which are can not be comparable, such as " + Feedback_Samples
+            raise TypeError(Feedback)
+    else:
+        List_Form_of_Sequence = list()
+        try:
+            for i in range(len(Sequence)):
+                List_Form_of_Sequence.append(Sequence[i])
+        except:
+            raise TypeError("The object does not support __getitem__() function. Please check that, the class of the given object is Array or a Subclass of Array.")
+        smart_sort(List_Form_of_Sequence)
+        for i in range(len(List_Form_of_Sequence)):
+            try:
+                if List_Form_of_Sequence[i] != Sequence[i]:
+                    Sequence.remove(Sequence[i])
+                    Sequence.insert(i,List_Form_of_Sequence[i])
+            except:
+                raise TypeError("The object does not support remove() or insert() function(s). Please check that, the class of the given object is Array or a Subclass of Array.")
